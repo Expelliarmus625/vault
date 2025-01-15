@@ -117,8 +117,7 @@ func DecryptImage(encryptedImage []byte, priv *rsa.PrivateKey) ([]byte, error) {
 
 // Save Image
 func SaveEncryptedImage(image Image) error {
-	filename := strings.TrimSuffix(filepath.Base(image.path), filepath.Ext(image.path))
-	outPath := filepath.Join(image.outputPath, filename+".dat")
+	outPath := filepath.Join(image.outputPath, filepath.Base(image.path))
 
 	// Create the outputPath if it doesn't exist
 	if _, err := os.Stat(image.outputPath); os.IsNotExist(err) {

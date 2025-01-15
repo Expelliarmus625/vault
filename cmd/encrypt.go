@@ -48,31 +48,39 @@ func init() {
 	encryptCmd.Flags().StringP("key", "k", "./privateKey.pem", "Path to private key")
 }
 
-func encryptAction(path, outputPath, key string) error {
+func encryptAction(inputpath, outputPath, key string) error {
 
-	info, err := os.Stat(path)
+	info, err := os.Stat(inputpath)
 	if err != nil {
 		return err
 	}
+
+	images := &app.ImageList{}
 	if info.IsDir() {
-		filepath.WalkDir(path, func(path string, d os.DirEntry, err error) error {
+		filepath.WalkDir(inputpath, func(path string, d os.DirEntry, err error) error {
 			if err != nil {
 				return err
 			}
 			if !d.IsDir() {
-				image := app.NewImage(path, filepath.Join(outputPath, filepath.Dir(path)))
-				err = image.Encrypt(key)
+				targetPath,err := filepath.Rel(inputpath, path)
+				if err != nil {
+					return err
+				}
+				image := app.NewImage(path, filepath.Join(outputPath, filepath.Dir(targetPath)))
+				// err = image.Encrypt(key)
+				*images = append(*images, image)
 				if err != nil {
 					return err
 				}
 			}
 			return nil
 		})
+		images.EncryptAll(key)
 
 		return nil
 	}
 
-	image := app.NewImage(path, outputPath)
+	image := app.NewImage(inputpath, outputPath)
 	err = image.Encrypt(key)
 	if err != nil {
 		return err

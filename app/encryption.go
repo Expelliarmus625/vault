@@ -4,6 +4,7 @@ import (
 	"crypto/rsa"
 	"fmt"
 	"path/filepath"
+	"sync"
 )
 
 
@@ -14,6 +15,7 @@ type Image struct {
 	cipher []byte
 }
 
+type ImageList []Image
 
 func NewImage(path, outputPath string) Image {
 	return Image{
@@ -59,5 +61,23 @@ func (i *Image) Encrypt(key string) error {
 	}
 	fmt.Printf("\nImage encrypted and saved as %s\n", i.outputPath)
 
+	return nil
+}
+
+func (i *ImageList) EncryptAll(key string) error {
+	var wg sync.WaitGroup
+	wg.Add(len(*i))
+
+	for _, image := range *i {
+		go func(image Image) {
+			defer wg.Done()
+			err := image.Encrypt(key)
+			if err != nil {
+				fmt.Println(err)
+			}
+		}(image)
+	}
+
+	wg.Wait()
 	return nil
 }
