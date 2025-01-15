@@ -1,0 +1,82 @@
+# Ignore all files in the vendor directory
+vendor/
+
+# Ignore all files with the .exe extension
+*.exe
+
+# Ignore os files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Ignore temp files
+*.swp
+*_test.go
+*_test.ts
+*.log
+*.tmp
+*.temp
+*.orig
+*.old
+*.new
+*.bak
+*.backup
+*.cache
+*.pid
+
+# Ignore build artifacts
+/bin
+/pkg
+/dist
+/build
+/coverage
+/test
+/out
+/release
+/debug
+/release
+/test-results
+/testdata
+vault
+
+# Ignore IDE files
+.idea
+.vscode
+*.iml
+*.ipynb
+*.sublime-project
+*.sublime-workspace
+
+# Ignore env files
+.env
+.env.example
+.env.local
+.env.production
+.env.development
+.env.test
+
+# Ignore npm and yarn lock files
+package-lock.json
+yarn.lock
+
+# Ignore macOS files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Ignore linux files
+*.swp
+*.swo
+
+# Ignore windows files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+#Ignore keys
+*.pem
