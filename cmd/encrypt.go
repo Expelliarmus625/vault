@@ -50,6 +50,7 @@ func init() {
 
 func encryptAction(inputpath, outputPath, key string) error {
 
+	//Get file info to determine if it is a file or directory
 	info, err := os.Stat(inputpath)
 	if err != nil {
 		return err

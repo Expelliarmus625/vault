@@ -9,7 +9,6 @@ import (
 	"github.com/schollz/progressbar/v3"
 	"os"
 	"path/filepath"
-	"strings"
 )
 
 // Parse Image
@@ -133,10 +132,10 @@ func SaveEncryptedImage(image Image) error {
 	return nil
 }
 
-// SaveDecryptedImage will save the decrypted image to the output path with the provided extension
+// SaveDecryptedImage will save the decrypted image to the output path 
 func SaveDecryptedImage(e EncryptedImage) error {
-	filename := strings.TrimSuffix(filepath.Base(e.path), filepath.Ext(e.path))
-	outfile := filepath.Join(e.outputPath, filename+e.ext)
+	// filename := strings.TrimSuffix(filepath.Base(e.path), filepath.Ext(e.path))
+	outfile := filepath.Join(e.outputPath, filepath.Base(e.path))
 
 	// Create the outputPath if it doesn't exist
 	if _, err := os.Stat(e.outputPath); os.IsNotExist(err) {

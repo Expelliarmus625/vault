@@ -6,6 +6,9 @@ Check LICENSE for details.
 package cmd
 
 import (
+	"os"
+	"path/filepath"
+
 	"github.com/expelliarmus625/vault/app"
 	"github.com/spf13/cobra"
 )
@@ -49,8 +52,37 @@ func init() {
 }
 
 func decryptAction(path, outputPath, key, ext string) error {
+	
+//Get file info to determine if it's a file or directory
+	info, err := os.Stat(path)
+	if err != nil {
+		return err
+	}
+
+	//initialize empty image list
+	images := &app.EncryptedImageList{}
+
+	//if it's a directory, decrypt all files
+	if info.IsDir() {
+		filepath.WalkDir(path, func(path string, d os.DirEntry, err error) error {
+			if err != nil {
+				return err
+			}
+			if !d.IsDir() {
+				targetPath, err := filepath.Rel(path, path)
+				if err != nil {
+					return err
+				}
+				image := app.NewEncryptedImage(path, filepath.Join(outputPath, filepath.Dir(targetPath)), ext)
+				*images = append(*images, image)
+			}
+			return nil
+		})
+	}
+	images.DecryptAll(key)
+
 	encImage := app.NewEncryptedImage(path, outputPath, ext)
-	err := encImage.Decrypt(key)
+	err = encImage.Decrypt(key)
 	if err != nil {
 		return err
 	}

@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"sync"
 )
 
 type EncryptedImage struct {
@@ -11,11 +12,13 @@ type EncryptedImage struct {
 	plaintext  []byte
 }
 
-func NewEncryptedImage(path, outputPath, ext string) *EncryptedImage {
+type EncryptedImageList []EncryptedImage
+
+func NewEncryptedImage(path, outputPath, ext string) EncryptedImage {
 	if ext == "" {
 		ext = ".png"
 	}
-	return &EncryptedImage{
+	return EncryptedImage{
 		path:       path,
 		outputPath: outputPath,
 		ext:        ext,
@@ -47,5 +50,24 @@ func (e *EncryptedImage) Decrypt(key string) error {
 		return err
 	}
 	fmt.Printf("\nImage decrypted and saved to %s\n", e.outputPath)
+	return nil
+}
+
+
+func (e *EncryptedImageList) DecryptAll(key string) error {
+	var wg sync.WaitGroup
+	wg.Add(len(*e))
+
+	for _, image := range *e {
+		go func(image EncryptedImage) {
+			defer wg.Done()
+			err := image.Decrypt(key)
+			if err != nil {
+				fmt.Println(err)
+			}
+		}(image)
+	}
+
+	wg.Wait()
 	return nil
 }
